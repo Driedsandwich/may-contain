@@ -1,0 +1,50 @@
+{
+  "name": "may-contain",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Source-backed multilingual allergen text matching and read-only OFF/MCP adapters",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "exports": {
+    ".": "./dist/src/index.js",
+    "./ocr": "./dist/src/ocr.js"
+  },
+  "types": "./dist/src/index.d.ts",
+  "files": [
+    "dist/src",
+    "dist/mcp",
+    "src",
+    "mcp",
+    "eval/RESULTS.md",
+    "eval/metrics.json",
+    "eval/run.ts",
+    "tests",
+    "scripts",
+    "tsconfig.json",
+    "README.md",
+    "LICENSE",
+    "DATA_LICENSE.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "mcp": "node dist/mcp/server.js",
+    "eval": "tsx eval/run.ts",
+    "check": "npm run build && npm test",
+    "audit:lexicon": "tsx scripts/audit-lexicon.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.32.2",
+    "tesseract.js": "6.0.1",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "22.15.30",
+    "tsx": "4.20.3",
+    "typescript": "5.8.3",
+    "vitest": "3.2.4"
+  }
+}

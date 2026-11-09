@@ -1,0 +1,215 @@
+{
+  "retrievedAt": "2026-11-09",
+  "offCommit": "03c18976a970f4579ba7aa4242ca19e6a09a485a",
+  "snapshots": [
+    {
+      "file": "allergens.txt",
+      "sha256": "0d3992c301b8cbda92e03fe0d98da3bd17794c51970222d9bea4d6b6549c658d"
+    },
+    {
+      "file": "ingredients.txt",
+      "sha256": "53379bd7b1a69ead00cb041d98c449d25406c5399f9decb8706acc4f817f681b"
+    }
+  ],
+  "curation": {
+    "ingredientNodes": {
+      "gluten": [
+        "gluten",
+        [
+          "wheat",
+          "rye",
+          "barley",
+          "oat",
+          "spelt",
+          "wheat flour",
+          "barley malt extract"
+        ]
+      ],
+      "crustaceans": [
+        "crustaceans",
+        [
+          "crustacean",
+          "shrimp",
+          "crab",
+          "lobster"
+        ]
+      ],
+      "eggs": [
+        "eggs",
+        [
+          "egg",
+          "egg white",
+          "egg yolk",
+          "egg powder"
+        ]
+      ],
+      "fish": [
+        "fish",
+        [
+          "fish",
+          "salmon",
+          "tuna",
+          "anchovy"
+        ]
+      ],
+      "peanuts": [
+        "peanuts",
+        [
+          "peanut",
+          "peanut butter"
+        ]
+      ],
+      "soybeans": [
+        "soybeans",
+        [
+          "soya",
+          "soya flour",
+          "soy protein",
+          "tofu"
+        ]
+      ],
+      "milk": [
+        "milk",
+        [
+          "milk",
+          "cow's milk",
+          "whey",
+          "casein",
+          "lactose",
+          "butter",
+          "milk powder",
+          "cheese"
+        ]
+      ],
+      "nuts": [
+        "nuts",
+        [
+          "tree nut",
+          "almond",
+          "hazelnut",
+          "walnut",
+          "cashew nuts",
+          "pistachio nuts",
+          "pecan nut",
+          "brazil nut",
+          "macadamia nut"
+        ]
+      ],
+      "celery": [
+        "celery",
+        [
+          "celery",
+          "celeriac"
+        ]
+      ],
+      "mustard": [
+        "mustard",
+        [
+          "mustard",
+          "mustard seed"
+        ]
+      ],
+      "sesame": [
+        "sesame seeds",
+        [
+          "sesame",
+          "sesame oil"
+        ]
+      ],
+      "sulphites": [
+        "sulphur dioxide and sulphites",
+        [
+          "sulfite"
+        ]
+      ],
+      "lupin": [
+        "lupin",
+        [
+          "lupin bean",
+          "lupin flour"
+        ]
+      ],
+      "molluscs": [
+        "molluscs",
+        [
+          "mollusc",
+          "squid",
+          "oyster",
+          "mussel"
+        ]
+      ],
+      "wheat": [
+        null,
+        [
+          "wheat",
+          "wheat flour",
+          "wheat gluten",
+          "spelt",
+          "wheat semolina"
+        ]
+      ],
+      "shrimp": [
+        null,
+        [
+          "shrimp",
+          "shrimp paste",
+          "shrimp powder"
+        ]
+      ],
+      "crab": [
+        null,
+        [
+          "crab"
+        ]
+      ],
+      "walnut": [
+        null,
+        [
+          "walnut",
+          "walnut kernel"
+        ]
+      ],
+      "cashew": [
+        null,
+        [
+          "cashew nuts",
+          "cashew nut paste"
+        ]
+      ],
+      "buckwheat": [
+        null,
+        [
+          "buckwheat",
+          "buckwheat flour"
+        ]
+      ]
+    },
+    "excludedAliases": {
+      "gluten": [
+        "そば",
+        "ソバ",
+        "小麦/そば",
+        "穀物"
+      ],
+      "nuts": [
+        "松仁",
+        "松子",
+        "板栗",
+        "白果",
+        "種実類",
+        "胡桃木",
+        "银杏果"
+      ],
+      "milk": [
+        "유"
+      ],
+      "eggs": [
+        "알"
+      ],
+      "soybeans": [
+        "콩"
+      ]
+    }
+  },
+  "notes": "Explicit node selection; no machine-translated or invented terms. See DATA_LICENSE.md."
+}
