@@ -24,7 +24,7 @@ The final command runs a stdio MCP server and waits for a client; it does not op
 
 ## Web app
 
-Planned live URL: **https://driedsandwich.github.io/may-contain/**. This is the deployment destination, not a claim that the site is currently published. The frontend is fully static; Vite uses `base: '/may-contain/'`. The site has no backend and needs no paid API key.
+Live demo: **https://driedsandwich.github.io/may-contain/**. The frontend is fully static; Vite uses `base: '/may-contain/'`. The site has no backend and needs no paid API key.
 
 1. Select **Edit allergens** and choose your allergens. The first screen explicitly uses an **Example profile** (milk, peanut and sesame), with a fictional French label, so judges can inspect the interaction immediately. Replace this selection for your own use. No allergy profile is assumed to be a medical record.
 2. **Remember my allergens on this device** is optional and off by default. It stores only selected canonical IDs in localStorage. **Clear & delete saved allergens** removes both the saved selection and the current selection. Photos, ingredient text and barcode results are held in memory only. Storage errors leave the app usable without saving.
@@ -53,7 +53,7 @@ For an optional real Tesseract integration check, start `npm run preview`, then 
 
 ### GitHub Pages
 
-The workflow in `.github/workflows/pages.yml` builds on pushes to `main` or a manual run, using official GitHub actions pinned to commit SHAs with version comments. It uploads only `dist/site`, not Node/MCP output. Deployment is **skipped while the repository is private**. When you choose to publish the repository, set **Settings → Pages → Source → GitHub Actions**, then run the workflow. No publication, push or remote settings change is performed by adding these files. The configured target is https://driedsandwich.github.io/may-contain/.
+The workflow in `.github/workflows/pages.yml` builds on pushes to `main` or a manual run, using official GitHub actions pinned to commit SHAs with version comments. It uploads only `dist/site`, not Node/MCP output. The repository is public and the site is published at https://driedsandwich.github.io/may-contain/. The deployment job runs for public repositories, with **Settings → Pages → Source → GitHub Actions**.
 
 The build copies `eval/RESULTS.md` into the site so the measured results link works even without opening GitHub. Its 90-product comparison is against community annotations, not clinical ground truth; limitations and unmeasured categories remain visible. Read GitHub's [official custom Pages workflow documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages) for environment and repository configuration.
 

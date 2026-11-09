@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Usage: assemble-demo.sh VIDEO_DIR NARRATION_DIR SCENES_JSON OUTPUT_MP4
 # NARRATION_DIR may be '-' or a missing/empty directory. Requires Python 3,
-# ffmpeg (libx264, libass, AAC) and ffprobe. FFMPEG/FFPROBE can override binaries.
+# ffmpeg (libx264, AAC; libass only for explicit cues) and ffprobe.
+# FFMPEG/FFPROBE can override binaries. Captions are off unless cues are supplied.
 # Longer narration extends the last video frame; shorter narration never cuts
 # recorded actions. One and a half seconds of reading room follows narration.
 set -euo pipefail
@@ -60,7 +61,7 @@ for scene in scenes:
     duration = max(seconds, audio_seconds + 1.5) if audio else seconds
     # All scene joins occur on a 30 fps boundary.
     duration = math.ceil(duration * 30 - 1e-7) / 30
-    cues = scene.get('cues', [{'start': 0, 'end': seconds, 'text': scene['subtitle']}])
+    cues = scene.get('cues', [])
     previous_end = 0
     for cue in cues:
         start, end = float(cue['start']), float(cue['end'])
@@ -124,7 +125,10 @@ with tempfile.TemporaryDirectory(prefix='may-contain-assemble-') as folder:
         command = [ffmpeg, '-hide_banner', '-loglevel', 'error', '-y', '-i', str(job['video'])]
         if has_audio:
             command += ['-i', str(job['audio'])] if job['audio'] else ['-f', 'lavfi', '-i', 'anullsrc=r=48000:cl=stereo']
-        vf = f"fps=30,scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2:color=0xefede8,setsar=1,tpad=stop_mode=clone:stop_duration={job['duration']},trim=duration={job['duration']},setpts=PTS-STARTPTS,subtitles={ass},format=yuv420p"
+        vf = f"fps=30,scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2:color=0xefede8,setsar=1,tpad=stop_mode=clone:stop_duration={job['duration']},trim=duration={job['duration']},setpts=PTS-STARTPTS"
+        if events:
+            vf += f",subtitles={ass}"
+        vf += ',format=yuv420p'
         command += ['-map', '0:v:0', '-vf', vf, '-c:v', 'libx264', '-preset', 'fast', '-crf', '18', '-threads', '2', '-r', '30']
         if has_audio:
             command += ['-map', '1:a:0', '-af', f"aresample=48000,apad,atrim=duration={job['duration']},asetpts=PTS-STARTPTS", '-c:a', 'aac', '-b:a', '192k', '-ar', '48000', '-ac', '2']
