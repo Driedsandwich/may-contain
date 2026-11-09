@@ -28,7 +28,8 @@ export interface OffOptions { userAgent?: string; fetch?: typeof fetch; timeoutM
 export class OffClient {
   private readonly fetcher: typeof fetch; private readonly userAgent: string;
   constructor(private readonly options: OffOptions = {}) {
-    this.fetcher = options.fetch ?? globalThis.fetch; this.userAgent = options.userAgent ?? DEFAULT_USER_AGENT;
+    // Native browser fetch requires its Window receiver when stored as an instance property.
+    this.fetcher = options.fetch ?? globalThis.fetch.bind(globalThis); this.userAgent = options.userAgent ?? DEFAULT_USER_AGENT;
     if (!this.userAgent.trim() || /[\r\n]/.test(this.userAgent)) throw new Error('A valid identifying User-Agent is required.');
   }
   private async get(path: string, params: URLSearchParams, kind: keyof typeof gates): Promise<unknown> {

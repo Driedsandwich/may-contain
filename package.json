@@ -6,7 +6,7 @@
   "type": "module",
   "license": "MIT",
   "engines": {
-    "node": ">=22"
+    "node": ">=22.12"
   },
   "exports": {
     ".": "./dist/src/index.js",
@@ -29,22 +29,34 @@
     "DATA_LICENSE.md"
   ],
   "scripts": {
-    "build": "tsc",
-    "test": "vitest run",
+    "build": "tsc && tsc -p tsconfig.app.json && vite build && node scripts/copy-site-docs.mjs",
+    "test": "vitest run tests",
     "mcp": "node dist/mcp/server.js",
     "eval": "tsx eval/run.ts",
     "check": "npm run build && npm test",
-    "audit:lexicon": "tsx scripts/audit-lexicon.ts"
+    "audit:lexicon": "tsx scripts/audit-lexicon.ts",
+    "dev": "vite",
+    "preview": "vite preview",
+    "test:ui": "playwright test"
   },
   "dependencies": {
+    "@fontsource/inter": "5.3.0",
     "@modelcontextprotocol/sdk": "1.32.2",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
     "tesseract.js": "6.0.1",
     "zod": "3.25.76"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
+    "@playwright/test": "1.65.0",
     "@types/node": "22.15.30",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "5.2.0",
     "tsx": "4.20.3",
     "typescript": "5.8.3",
+    "vite": "7.3.7",
     "vitest": "3.2.4"
   }
 }

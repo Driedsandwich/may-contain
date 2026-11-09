@@ -32,3 +32,7 @@ aggregate statistics are included. Display attribution when using OFF data.
 OFF photographs, if used in a future application, have separate
 [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/) terms and may
 contain packaging artwork with additional rights. No such images are included.
+
+## Frontend assets
+
+The frontend bundles Inter font files from `@fontsource/inter`, under the SIL Open Font License. The full notice is included in `public/INTER-LICENSE.txt` and copied to the static site. The fictional product package is an original inline SVG illustration in `web/App.tsx`; it is not an actual product image. Example labels and their translations are explicitly fictional demo content. Other applicable software licenses remain with their respective packages.

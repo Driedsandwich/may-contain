@@ -1,6 +1,6 @@
-# Allergen Travel Core
+# May Contain
 
-A small TypeScript core for a student medical hackathon: compare food ingredient text with a person's locally supplied allergen IDs. No UI, accounts, patient records, diagnosis, or recommendation to eat a food. Supports barcode lookup through Open Food Facts (OFF), a browser OCR draft, and two read-only MCP tools.
+A mobile-first, English web app for checking food labels while travelling, built for DSH Hacks V2 (AI × Healthcare). A large, fixed-phrase allergy card starts the conversation with staff; per-allergen text evidence sits below it. The Vite + React + TypeScript frontend imports the existing matcher, lexicon, Open Food Facts (OFF) adapter and on-device OCR. The same core powers two local, read-only MCP tools. No accounts, patient records, diagnosis, or permission to eat a food.
 
 **Not found does not mean safe. Always check the package and ask staff. If you have a severe allergy, follow your doctor's plan.**
 
@@ -8,16 +8,56 @@ Every successful text check includes this notice, including `contains` and `may_
 
 ## Run
 
-Node.js 22 or newer, with npm:
+Node.js 22.12 or newer, with npm:
 
 ```sh
 npm ci
-npm run build
-npm test
+npm run dev      # Open the printed local URL, under /may-contain/
+npm run build    # Core/MCP: dist/; static site: dist/site/
+npm test         # Core, MCP and fixed-card/example checks
+npm run preview  # Preview the production site at /may-contain/
+# In a separate terminal, if using an MCP client:
 npm run mcp
 ```
 
 The final command runs a stdio MCP server and waits for a client; it does not open a web page. Dependencies and the lockfile are pinned. `npm run check` builds and tests. `npm run audit:lexicon` re-fetches the two frozen taxonomy sources and verifies 1,561 OFF term records against their exact lines and SHA-256 hashes; 12 government/Wikidata additions were manually checked. No API key is needed. The matcher itself performs no network requests.
+
+## Web app
+
+Planned live URL: **https://driedsandwich.github.io/may-contain/**. This is the deployment destination, not a claim that the site is currently published. The frontend is fully static; Vite uses `base: '/may-contain/'`. The site has no backend and needs no paid API key.
+
+1. Select **Edit allergens** and choose your allergens. The first screen explicitly uses an **Example profile** (milk, peanut and sesame), with a fictional French label, so judges can inspect the interaction immediately. Replace this selection for your own use. No allergy profile is assumed to be a medical record.
+2. **Remember my allergens on this device** is optional and off by default. It stores only selected canonical IDs in localStorage. **Clear & delete saved allergens** removes both the saved selection and the current selection. Photos, ingredient text and barcode results are held in memory only. Storage errors leave the app usable without saving.
+3. Try the **French**, **German** or **Japanese** example text, or select **Check a label**. French and German use fictional almond oat bites; Japanese uses fictional rice crackers. The example translations are fixed copy and labelled as such.
+4. **Barcode:** enter 8–14 digits, retaining leading zeros, or scan with a supported browser's `BarcodeDetector`. Camera access requires HTTPS or localhost and browser permission. If scanning is unavailable, enter the printed number. Review the retrieved text before checking. The barcode number is the only user input sent to OFF; your allergen list and photos are not sent. Requests also include an identifying app header and normal network metadata. Product source, barcode and retrieval time are shown with results. Community database tags stay separate from the text evidence.
+5. **Label photo:** choose the label language, then an image. `src/ocr.ts` runs Tesseract in a local worker. First use downloads reading tools and language models; images are never uploaded. Review and correct the draft and explicitly confirm it against the package before checking. Editing it resets that confirmation. A blank/unreadable photo is an error, never an all-negative result.
+6. **Paste text:** choose the actual language and include precautionary statements. Once the app has loaded, this path works offline. An initial offline visit or uncached OCR language download still needs a connection. Unsupported/unknown languages, missing text, missing products and network errors are separate processing states, without invented allergen results.
+7. Each selected allergen has **Contains**, **May contain**, or **Not found in this text**, with text, distinct symbols, original-word highlights and quoted evidence. The core's aggregate status is deliberately not rendered as a product verdict. For arbitrary labels, no automatic English translation is attempted; the original is preserved and unavailable translation is stated. OFF language fields are not assumed to be equivalent translations of the same package.
+8. Choose one of eight staff-card languages immediately below the card. This changes the card only, never the label result. **Show full screen** opens a large, keyboard-accessible card; rotate your phone to landscape. Browsers without the Fullscreen API use a viewport-sized dialog. Close with the visible button or Escape. The full safety notice remains part of the card and may require scrolling with large selections.
+
+All staff-card names and templates live in `web/content.ts`. They are fixed at runtime, not model-generated. [Translation review notes](public/card-review.md) document the pending independent language review and how to correct the phrases. The selected allergen names are bold; original and English example evidence is matched separately using the core's actual UTF-16 offsets.
+
+Inter font files are bundled locally (SIL Open Font License, via `@fontsource/inter`); Japanese/CJK text uses system fallbacks. The fictional package illustration is an original inline SVG, not an actual product photo. Keyboard focus, native modal focus trapping, reduced-motion preferences, 320/390px layouts and mobile landscape are supported.
+
+### Browser checks
+
+```sh
+npm run build
+npx playwright install chromium
+npm run test:ui
+```
+
+Playwright runs headlessly against the built site. The suite covers mobile and desktop layout, the eight languages, profile storage/deletion, keyboard dialogs, fullscreen fallback, offline text, real core matches, mocked OFF success/failure, and mocked OCR review/failure flows. Axe checks the default page and profile dialog. A fake camera also checks capture and stream release; physical-camera quality is not measured. This does not establish medical safety or real camera/OCR accuracy. Set `UI_ARTIFACT_DIR` to a directory of your choice to also save desktop, 390px mobile and landscape screenshots. No personal or real product records are used in these browser fixtures.
+
+For an optional real Tesseract integration check, start `npm run preview`, then run `node scripts/verify-ocr.mjs`. This reads a generated English ingredient image with the real worker/models, requires network access on first use, verifies the expected evidence and checks observed request methods. One clean synthetic image is not an OCR accuracy benchmark.
+
+### GitHub Pages
+
+The workflow in `.github/workflows/pages.yml` builds on pushes to `main` or a manual run, using official GitHub actions pinned to commit SHAs with version comments. It uploads only `dist/site`, not Node/MCP output. Deployment is **skipped while the repository is private**. When you choose to publish the repository, set **Settings → Pages → Source → GitHub Actions**, then run the workflow. No publication, push or remote settings change is performed by adding these files. The configured target is https://driedsandwich.github.io/may-contain/.
+
+The build copies `eval/RESULTS.md` into the site so the measured results link works even without opening GitHub. Its 90-product comparison is against community annotations, not clinical ground truth; limitations and unmeasured categories remain visible. Read GitHub's [official custom Pages workflow documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages) for environment and repository configuration.
+
+## Core API example
 
 ```ts
 import {
@@ -62,13 +102,13 @@ Precaution scopes end at sentence punctuation or semicolons; OCR line wraps do n
 
 Tesseract.js is pinned to **6.0.1**. [Official worker API](https://github.com/naptha/tesseract.js/blob/v6.0.1/docs/api.md). This adapter is deliberately documented with a usage example instead of an OCR test suite.
 
-Use a bundler such as Vite when the UI is added. Pass a `File` or `Blob` obtained from a local file input; no image is uploaded by this module. The worker may download JavaScript/WASM and trained language models. Supply `workerPath`, `corePath`, and `langPath` in the third argument to self-host these assets or pin the model files for reproducible/offline use. The npm library version is pinned; upstream language model downloads are not bundled or pinned here.
+The frontend uses Vite. Pass a `File` or `Blob` obtained from a local file input; no image is uploaded by this module. The worker may download JavaScript/WASM and trained language models. Supply `workerPath`, `corePath`, and `langPath` in the third argument to self-host these assets or pin the model files for reproducible/offline use. The npm library version is pinned; upstream language model downloads are not bundled or pinned here.
 
 ```ts
 import { readIngredientsPhoto } from './src/ocr.js';
 import { checkIngredients } from './src/match.js';
 
-// In the future UI's file-selection handler; `file` is a local File.
+// In a file-selection handler; `file` is a local File.
 const draft = await readIngredientsPhoto(file, ['en', 'ja']);
 // draft.originalText: untouched OCR text
 // draft.editableText: initial value for a user-editable textarea
@@ -82,7 +122,7 @@ const correctedText = textarea.value;
 const result = checkIngredients(correctedText, ['milk', 'wheat']);
 ```
 
-The example assumes the future UI provides `file`, `textarea`, and `confidenceLabel`. No UI is included. The worker is terminated in `finally`. Supported models: `eng`, `jpn`, `fra`, `deu`, `spa`, `ita`, `kor`, `chi_sim`. Chinese OCR here uses the simplified-Chinese model; the lexical data include some traditional forms. OCR confidence is not a calibrated probability and cannot establish allergen absence. OCR and real browser execution were not tested in this task.
+The example assumes the caller provides `file`, `textarea`, and `confidenceLabel`; the React UI implements the same review flow. The worker is terminated in `finally`. Supported models: `eng`, `jpn`, `fra`, `deu`, `spa`, `ita`, `kor`, `chi_sim`. Chinese OCR here uses the simplified-Chinese model; the lexical data include some traditional forms. OCR confidence is not a calibrated probability and cannot establish allergen absence. See the browser-check instructions above for frontend coverage; automated OCR flow fixtures do not measure recognition accuracy.
 
 ## AI agents / MCP
 
